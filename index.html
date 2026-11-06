@@ -1,0 +1,346 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>COPD Hoe gaat het nu?</title>
+<style>
+/* ===== Kleuren overgenomen van het papieren prototype ===== */
+:root{
+  --navy:#1d3a7a;
+  --tekst:#222;
+  --grijs:#b4b4b4;
+  --groen:#6aac5c;
+  --oranje:#eaaa40;
+  --rood:#d0393b;
+  --blauw-vlak:#f2f6fc;
+  --groen-vlak:#f1f7ee;
+  --rand:#d9e1ee;
+  --hu-blauw:#5b7db8;
+  --hu-rood:#c1392b;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,Helvetica,sans-serif;color:var(--tekst);background:#e9edf3}
+
+/* ===== Invoerscherm (alleen op scherm) ===== */
+.invoer{max-width:1000px;margin:24px auto;background:#fff;border-radius:16px;padding:24px;box-shadow:0 2px 10px rgba(0,0,0,.08)}
+.invoer h1{color:var(--navy);margin:0 0 4px;font-size:22px}
+.invoer p.uitleg{margin:0 0 16px;color:#555;font-size:14px}
+.invoer table{width:100%;border-collapse:collapse;font-size:14px}
+.invoer th{text-align:left;color:var(--navy);padding:6px 8px;border-bottom:2px solid var(--rand)}
+.invoer td{padding:6px 8px;border-bottom:1px solid #eef1f6}
+.invoer input{width:110px;padding:6px 8px;border:1px solid #c9d2e0;border-radius:6px;font-size:14px}
+.invoer .eenheid{color:#777;font-size:12px}
+.knoppen{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap}
+button{font-size:15px;padding:10px 18px;border-radius:8px;border:0;cursor:pointer}
+.primair{background:var(--navy);color:#fff}
+.secundair{background:#e6eaf2;color:var(--navy)}
+.privacy{font-size:12px;color:#666;margin-top:12px}
+
+/* ===== De plaat (A4) ===== */
+.plaat-wrap{display:flex;justify-content:center;padding:0 0 40px}
+.plaat{width:210mm;min-height:297mm;background:#fff;padding:9mm 8mm 6mm;box-shadow:0 2px 12px rgba(0,0,0,.12)}
+.kop{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4mm}
+.kop h1{margin:0;color:var(--navy);font-size:30px;font-weight:800}
+.kop .sub{color:var(--navy);font-size:15px;margin-top:3px}
+.logos{display:flex;gap:14px;align-items:center}
+.logo-hu{display:flex;align-items:center;gap:6px;font-weight:700;color:var(--hu-blauw);font-size:13px;line-height:1.05;letter-spacing:.5px}
+.logo-hu .mark{color:var(--hu-rood);font-size:26px;font-weight:900}
+.logo-hu .r{color:var(--hu-rood)}
+.logo-zuyd{color:var(--hu-rood);font-weight:800;font-size:16px;line-height:1}
+
+.deel{border:1px solid var(--rand);border-radius:22px;padding:4mm;margin-bottom:3mm}
+.deel1{background:var(--blauw-vlak)}
+.deel3{background:var(--groen-vlak)}
+.deelkop{display:flex;align-items:center;gap:12px}
+.nr{flex:none;width:40px;height:40px;border-radius:50%;background:var(--navy);color:#fff;font-weight:700;font-size:20px;display:flex;align-items:center;justify-content:center}
+.deelkop h2{margin:0;color:var(--navy);font-size:16px}
+.deelkop .vraag{color:#555;font-weight:400;font-size:13px}
+.legenda{margin-left:auto;font-size:12px;display:flex;gap:10px;white-space:nowrap}
+.dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:3px;vertical-align:middle}
+
+.kaarten{display:flex;gap:5px;margin-top:3mm}
+.kaart{flex:1 1 0;min-width:0;background:#fff;border:1px solid var(--rand);border-radius:16px;padding:8px 4px 10px;text-align:center;display:flex;flex-direction:column;align-items:center}
+.kaart svg.icoon{width:26px;height:26px;stroke:#111;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.kaart .naam{color:var(--navy);font-weight:700;font-size:12px;margin-top:6px;min-height:30px;display:flex;align-items:center}
+.kaart .toel{color:#555;font-size:10.5px;min-height:38px}
+.kaart .waarde{color:var(--navy);font-weight:800;font-size:17px;margin:4px 0 2px}
+.kaart .vorig{font-size:9.5px;color:#888;min-height:12px}
+.kaart svg.lijn{width:62px;height:44px;margin:2px 0 4px}
+.kaart .uitleg{font-size:10.5px;line-height:1.3}
+.geen{font-size:13px;color:#777;padding:14px;text-align:center;width:100%}
+.info{color:var(--navy);font-weight:700;font-size:11.5px;margin-top:3mm}
+
+.deel2 .rij{display:flex;gap:4mm}
+.keuzes{display:flex;gap:18px;margin-top:5mm;font-size:13px}
+.cirkel{display:inline-block;width:18px;height:18px;border-radius:50%;border:1.5px solid;vertical-align:middle;margin-right:5px}
+.valtop{flex:0 0 38%;background:var(--blauw-vlak);border-radius:14px;padding:8px 12px}
+.valtop b{color:var(--navy);font-size:13px}
+.lijntje{border-bottom:1px solid #999;height:16px}
+
+.tabel3{display:grid;grid-template-columns:27% 9% 36% 1fr;gap:5px;margin-top:3mm}
+.blok{background:#fff;border:1px solid var(--rand);border-radius:14px;padding:8px 10px;font-size:12px}
+.blok h3{margin:0 0 6px;color:var(--navy);font-size:12.5px}
+.blok .r{height:22px;display:flex;align-items:center;border-bottom:1px solid transparent}
+.blok .r.l{border-bottom-color:#999}
+.janee{display:flex;justify-content:space-around;width:100%;font-size:11px}
+.voet{font-size:8.5px;text-align:center;color:#333;margin-top:2mm}
+
+/* ===== Print ===== */
+@page{size:A4;margin:0}
+@media print{
+  body{background:#fff}
+  .invoer{display:none}
+  .plaat-wrap{padding:0}
+  .plaat{box-shadow:none;width:210mm;height:297mm;overflow:hidden}
+  *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+@media (max-width:820px){ .plaat-wrap{overflow-x:auto;justify-content:flex-start} }
+</style>
+</head>
+<body>
+
+<!-- ================= INVOER ================= -->
+<section class="invoer">
+  <h1>Meetresultaten invoeren</h1>
+  <p class="uitleg">Vul per meting de vorige en de huidige waarde in. Lege metingen worden niet op de plaat getoond. Alleen “huidig” invullen mag ook (dan is er geen vergelijking).</p>
+  <form id="form" autocomplete="off" onsubmit="return false">
+    <table>
+      <thead><tr><th>Meting</th><th>Vorige keer</th><th>Huidig</th><th></th></tr></thead>
+      <tbody id="invoerRijen"></tbody>
+    </table>
+  </form>
+  <div class="knoppen">
+    <button class="primair" onclick="window.print()">Print / opslaan als PDF</button>
+    <button class="secundair" onclick="wissen()">Alles wissen</button>
+  </div>
+  <p class="privacy">Privacy: er wordt niets opgeslagen of verstuurd. Alles staat alleen in dit browservenster en verdwijnt bij sluiten of vernieuwen.</p>
+</section>
+
+<!-- ================= PLAAT ================= -->
+<div class="plaat-wrap">
+<div class="plaat" id="plaat">
+  <div class="kop">
+    <div>
+      <h1>COPD Hoe gaat het nu?</h1>
+      <div class="sub">Van meten naar betekenis, samen beslissen.</div>
+    </div>
+    <div class="logos">
+      <div class="logo-hu"><span class="mark">I<span style="color:var(--hu-blauw)">!</span>U</span><span>HOGESCHOOL<br><span class="r">UTRECHT</span></span></div>
+      <div class="logo-zuyd">ZU<br>YD</div>
+    </div>
+  </div>
+
+  <!-- DEEL 1 -->
+  <div class="deel deel1">
+    <div class="deelkop">
+      <div class="nr">1</div>
+      <h2>Wat laten de metingen zien?</h2>
+      <div class="legenda">
+        <span><span class="dot" style="background:var(--grijs)"></span>= vorige keer</span>
+        <span><span class="dot" style="background:var(--groen)"></span>= beter</span>
+        <span><span class="dot" style="background:var(--oranje)"></span>= aandacht</span>
+      </div>
+    </div>
+    <div class="kaarten" id="kaarten"></div>
+    <div class="info">ⓘ Deze metingen geven een beeld van hoe het met je gaat.</div>
+  </div>
+
+  <!-- DEEL 2 -->
+  <div class="deel deel2">
+    <div class="rij">
+      <div style="flex:1">
+        <div class="deelkop">
+          <div class="nr">2</div>
+          <h2>Komen deze resultaten overeen met jouw gevoel? <span class="vraag">Wat vind je (persoon met COPD) ervan?</span></h2>
+        </div>
+        <div class="keuzes">
+          <span><span class="cirkel" style="border-color:var(--groen)"></span>Ja, dit klopt</span>
+          <span><span class="cirkel" style="border-color:var(--oranje)"></span>Voor een deel</span>
+          <span><span class="cirkel" style="border-color:var(--rood)"></span>Nee, dit klopt niet</span>
+        </div>
+      </div>
+      <div class="valtop">
+        <b>💬 Wat valt op?</b>
+        <div class="lijntje"></div><div class="lijntje"></div><div class="lijntje"></div><div class="lijntje"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DEEL 3 -->
+  <div class="deel deel3">
+    <div class="deelkop">
+      <div class="nr">3</div>
+      <h2>Welke dingen die je doet gaan moeilijk(er)?<br><span class="vraag">Wat betekenen de uitslagen voor het dagelijks leven?</span></h2>
+    </div>
+    <div class="tabel3" id="tabel3"></div>
+  </div>
+
+  <div class="voet">1) ATS Committee on Proficiency Standards for Clinical Pulmonary Function Laboratories, 2002; 2) Van der Molen et al., 2003; 3) Stevens et al., 2018</div>
+</div>
+</div>
+
+<script>
+/* =====================================================================
+   METINGEN
+   hogerIsBeter: true  -> stijging = beter (groen), daling = aandacht
+                 false -> daling = beter (groen), stijging = aandacht
+   ===================================================================== */
+const METINGEN = [
+  {id:"6mwt",      naam:"6MWT<sup>1</sup>",            toel:"(gelopen afstand)",               eenheid:" m",  dec:0, hogerIsBeter:true,  icoon:"lopen"},
+  {id:"saturatie", naam:"Saturatie",                    toel:"(zuurstof in het bloed)",         eenheid:"%",   dec:0, hogerIsBeter:true,  icoon:"druppel"},
+  {id:"hartslag",  naam:"Hartslag",                     toel:"",                                eenheid:"",    dec:0, hogerIsBeter:false, icoon:"hart"},
+  {id:"borgB",     naam:"BORG benauwdheid",             toel:"(0–10)",                          eenheid:"",    dec:1, hogerIsBeter:false, icoon:"adem"},
+  {id:"borgV",     naam:"BORG vermoeidheid",            toel:"(0–10)",                          eenheid:"",    dec:1, hogerIsBeter:false, icoon:"moe"},
+  {id:"stappen",   naam:"Stappen per dag",              toel:"(gemiddeld)",                     eenheid:"",    dec:0, hogerIsBeter:true,  icoon:"schoen"},
+  {id:"ccq",       naam:"CCQ-vragenlijst<sup>2</sup>",  toel:"(klachten dagelijks leven, 0-6)", eenheid:"",    dec:1, hogerIsBeter:false, icoon:"lijst"},
+  {id:"kracht",    naam:"Kracht",                       toel:"(grote spieren)",                 eenheid:" kg", dec:0, hogerIsBeter:true,  icoon:"gewicht"},
+];
+
+/* =====================================================================
+   TEKSTEN-DATABASE  (hier vervangen door de aangeleverde teksten)
+   Per meting een lijst regels; de EERSTE regel die past wordt gebruikt.
+   - trend: "beter" | "aandacht" | "gelijk" | "eerste" (geen vorige meting) | "*" (altijd)
+   - min / max (optioneel): grenzen voor de HUIDIGE waarde
+   - {waarde} en {vorige} worden ingevuld met de getallen
+   ===================================================================== */
+const TEKSTEN = {
+  "6mwt": [
+    {trend:"*", max:150,           tekst:"Je kunt ongeveer 2–5 minuten achter elkaar lopen."},
+    {trend:"*", min:150, max:350,  tekst:"Je zou ongeveer 5–10 minuten achter elkaar kunnen lopen."},
+    {trend:"*", min:350,           tekst:"Je zou meer dan 10 minuten achter elkaar kunnen lopen."},
+  ],
+  "saturatie": [
+    {trend:"*", max:90,  tekst:"Je zuurstof is flink gedaald. Bespreek dit met je fysiotherapeut."},
+    {trend:"aandacht",   tekst:"Je zuurstof is gedaald, maar je kunt doorlopen."},
+    {trend:"*",          tekst:"Je zuurstof blijft goed tijdens de inspanning."},
+  ],
+  "hartslag": [
+    {trend:"aandacht", tekst:"Je hartslag is verhoogd tijdens de inspanning."},
+    {trend:"beter",    tekst:"Je hartslag is lager tijdens de inspanning."},
+    {trend:"*",        tekst:"Je hartslag tijdens de inspanning is {waarde}."},
+  ],
+  "borgB": [
+    {trend:"*", min:5,  tekst:"Je hebt het duidelijk benauwd tijdens de inspanning."},
+    {trend:"*", min:3,  tekst:"Je hebt het wat benauwd tijdens de inspanning."},
+    {trend:"*",         tekst:"Je hebt het weinig benauwd tijdens de inspanning."},
+  ],
+  "borgV": [
+    {trend:"*", min:7,  tekst:"Je bent erg moe aan het einde van de test."},
+    {trend:"*", min:4,  tekst:"Je bent wat moe aan het einde van de test."},
+    {trend:"*",         tekst:"Je bent weinig moe aan het einde van de test."},
+  ],
+  "stappen": [
+    {trend:"*", tekst:"Je loopt gemiddeld {waarde} stappen per dag."},
+  ],
+  "ccq": [
+    {trend:"*", min:2,  tekst:"Je ervaart klachten in je dagelijks leven."},
+    {trend:"*",         tekst:"Je ervaart weinig klachten in je dagelijks leven."},
+  ],
+  "kracht": [
+    {trend:"aandacht",  tekst:"Je spierkracht is afgenomen."},
+    {trend:"*",         tekst:"Je spierkracht is voldoende."},
+  ],
+};
+
+/* ===== Iconen (eenvoudige lijn-iconen) ===== */
+const ICONEN = {
+  lopen:  '<circle cx="13" cy="4" r="2"/><path d="M11 21l2-6-3-3 1-5 3 3 3 1M10 12l-3 2-1 3M13 15l3 6"/>',
+  druppel:'<path d="M12 3c3 4 6 7.5 6 11a6 6 0 0 1-12 0c0-3.5 3-7 6-11z"/>',
+  hart:   '<path d="M12 20s-8-5-8-11a4.5 4.5 0 0 1 8-2.5A4.5 4.5 0 0 1 20 9c0 6-8 11-8 11z"/>',
+  adem:   '<path d="M14 4c3 0 6 2 6 6 0 2-1 3-1 5h-2v3h-4M14 4c-2 0-4 2-4 5M2 11h6M3 14h5M2 17h6"/>',
+  moe:    '<path d="M7 17a4 4 0 0 1-1-8 5 5 0 0 1 9-2 4 4 0 0 1 3 7 3 3 0 0 1-4 3z"/><path d="M8 11h2l-2 2h2M12 10h2l-2 2h2"/>',
+  schoen: '<path d="M3 16h17c1 0 1-2 0-2.5L14 11l-2-3-2 1-1-1-3 1-3 2z"/><path d="M3 18h18"/>',
+  lijst:  '<rect x="5" y="4" width="13" height="17" rx="1"/><path d="M9 3h5v3H9zM8 10h2M12 10h4M8 14h2M12 14h4M8 18h2M12 18h3"/>',
+  gewicht:'<path d="M6 6l12 12M4 10l6-6M14 20l6-6M2 12l2 2M20 10l2 2M8 16l8-8"/>',
+};
+
+/* ===== Hulpfuncties ===== */
+const fmt = (v, dec) => v.toLocaleString("nl-NL", {minimumFractionDigits:0, maximumFractionDigits:dec});
+function leesGetal(s){
+  s = (s||"").trim().replace(/\./g,"").replace(",",".");
+  if(s==="") return null;
+  const n = Number(s);
+  return isFinite(n) ? n : null;
+}
+function bepaalTrend(m, vorige, huidig){
+  if(vorige===null) return "eerste";
+  if(huidig===vorige) return "gelijk";
+  const omhoog = huidig > vorige;
+  return (omhoog === m.hogerIsBeter) ? "beter" : "aandacht";
+}
+function kiesTekst(m, trend, huidig, vorige){
+  const regels = TEKSTEN[m.id] || [];
+  const r = regels.find(r =>
+    (r.trend==="*" || r.trend===trend) &&
+    (r.min===undefined || huidig >= r.min) &&
+    (r.max===undefined || huidig <  r.max));
+  if(!r) return "";
+  return r.tekst.replace("{waarde}", fmt(huidig,m.dec)).replace("{vorige}", vorige===null?"":fmt(vorige,m.dec));
+}
+function lijnSvg(vorige, huidig, trend){
+  const kleur = {beter:"var(--groen)", gelijk:"var(--groen)", aandacht:"var(--oranje)", eerste:"var(--navy)"}[trend];
+  if(trend==="eerste") return `<svg class="lijn" viewBox="0 0 62 44"><circle cx="31" cy="22" r="10" fill="${kleur}"/></svg>`;
+  // omhoog of omlaag lopende lijn (richting van de waarde, niet van "beter")
+  const yV = huidig>vorige ? 32 : huidig<vorige ? 12 : 22;
+  const yH = huidig>vorige ? 12 : huidig<vorige ? 32 : 22;
+  return `<svg class="lijn" viewBox="0 0 62 44">
+    <line x1="13" y1="${yV}" x2="49" y2="${yH}" stroke="#999" stroke-width="1.5"/>
+    <circle cx="13" cy="${yV}" r="10" fill="var(--grijs)"/>
+    <circle cx="49" cy="${yH}" r="10" fill="${kleur}"/></svg>`;
+}
+
+/* ===== Invoer opbouwen ===== */
+const tbody = document.getElementById("invoerRijen");
+METINGEN.forEach(m=>{
+  const tr = document.createElement("tr");
+  tr.innerHTML = `<td>${m.naam.replace(/<sup>.*<\/sup>/,"")} <span class="eenheid">${m.toel}</span></td>
+    <td><input inputmode="decimal" data-id="${m.id}" data-k="vorige" placeholder="—"></td>
+    <td><input inputmode="decimal" data-id="${m.id}" data-k="huidig" placeholder="—"></td>
+    <td class="eenheid">${m.eenheid.trim()}</td>`;
+  tbody.appendChild(tr);
+});
+document.getElementById("form").addEventListener("input", render);
+
+/* ===== Plaat tekenen ===== */
+function render(){
+  const waarde = (id,k)=> leesGetal(document.querySelector(`input[data-id="${id}"][data-k="${k}"]`).value);
+  const kaarten = document.getElementById("kaarten");
+  let html = "";
+  METINGEN.forEach(m=>{
+    const huidig = waarde(m.id,"huidig");
+    if(huidig===null) return;                 // niet ingevuld -> niet tonen
+    const vorige = waarde(m.id,"vorige");
+    const trend = bepaalTrend(m, vorige, huidig);
+    html += `<div class="kaart">
+      <svg class="icoon" viewBox="0 0 24 24">${ICONEN[m.icoon]}</svg>
+      <div class="naam">${m.naam}</div>
+      <div class="toel">${m.toel}</div>
+      <div class="waarde">${fmt(huidig,m.dec)}${m.eenheid}</div>
+      <div class="vorig">${vorige===null?"":"vorige keer: "+fmt(vorige,m.dec)+m.eenheid}</div>
+      ${lijnSvg(vorige,huidig,trend)}
+      <div class="uitleg">${kiesTekst(m,trend,huidig,vorige)}</div>
+    </div>`;
+  });
+  kaarten.innerHTML = html || `<div class="geen">Nog geen metingen ingevuld.</div>`;
+}
+
+/* ===== Deel 3 (leeg, om op papier in te vullen) ===== */
+(function(){
+  const act = ["🚶 Wandelen","🪜 Traplopen","🛒 Boodschappen doen","🚲 Fietsen","🏠 Huishouden","👥 Sociale activiteiten / familie & vrienden","💼 Werk / vrijwilligerswerk","Anders, namelijk:"];
+  const kol = (titel, cel) => `<div class="blok">${titel}${act.map(cel).join("")}</div>`;
+  document.getElementById("tabel3").innerHTML =
+    kol(`<h3>Activiteit</h3>`, a=>`<div class="r">${a}</div>`) +
+    kol(`<h3>Score PSG<sup>3</sup></h3>`, ()=>`<div class="r l"></div>`) +
+    kol(`<h3>Wat betekent moeilijker? <span style="font-weight:400;color:#666;font-size:10.5px">(bijv. meer pauzes, langzamer)</span></h3>`, ()=>`<div class="r l"></div>`) +
+    kol(`<h3 style="text-align:center">Maak je je hier zorgen over?</h3>`, ()=>`<div class="r"><div class="janee"><span>○ Ja</span><span>○ Nee</span><span>○ Soms</span></div></div>`);
+})();
+
+function wissen(){
+  document.getElementById("form").reset();
+  render();
+}
+render();
+</script>
+</body>
+</html>
